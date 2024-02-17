@@ -1,13 +1,9 @@
-import { db } from "@/lib/prisma";
+import prisma from "@/lib/prisma";
 import { NextResponse } from "next/server";
 
 export async function GET(req: Request) {
-  const { username, title, content } = await req.json();
-
-  // Prismaを使ってデータをデータベースに保存
-  //post to supabase
-  const allBBSPosts = await db.post.findAll();
-  // 保存したデータをレスポンスとして返す
+  const allBBSPosts = await prisma.post.findMany();
+  // console.log(allBBSPosts);
   return NextResponse.json(allBBSPosts);
 }
 
@@ -16,7 +12,7 @@ export async function POST(req: Request) {
 
   // Prismaを使ってデータをデータベースに保存
   //post to supabase
-  const post = await db.post.create({
+  const post = await prisma.post.create({
     data: {
       username,
       title,

@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { useRouter } from "next/navigation";
 
 const formSchema = z.object({
   username: z.string().min(2, {
@@ -31,7 +32,8 @@ const formSchema = z.object({
     .max(140, { message: "本文は140文字以内で入力してください。" }),
 });
 
-export default function ProfileForm() {
+export default function CreateBBSForm() {
+  const router = useRouter();
   // 1. Define your form.
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -54,6 +56,8 @@ export default function ProfileForm() {
         },
         body: JSON.stringify({ username, title, content }),
       });
+
+      router.push("/");
     } catch (err) {
       console.error(err);
     }

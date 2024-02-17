@@ -1,9 +1,16 @@
 import { PrismaClient } from "@prisma/client";
 
-// 'prisma'プロパティをグローバルオブジェクトに追加するか、既存のものを使用
-var prisma = global.prisma || new PrismaClient();
+declare global {
+  var prisma: PrismaClient;
+}
 
-// 開発環境でのみグローバルオブジェクトに'prisma'を設定
-if (process.env.NODE_ENV === "development") global.prisma = prisma;
+if (process.env.NODE_ENV === "production") {
+  prisma = new PrismaClient();
+} else {
+  if (!global.prisma) {
+    global.prisma = new PrismaClient();
+  }
+  prisma = global.prisma;
+}
 
-export const db = prisma;
+export default prisma;

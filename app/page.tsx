@@ -3,16 +3,18 @@ import Link from "next/link";
 import BBSCardList from "./components/BBSCardList";
 import { BBSCardData } from "./components/types/types";
 
-export default async function Home() {
-  const bbsCardListData: BBSCardData[] = await fetch(
-    `${process.env.NEXT_PUBLIC_BASE_URL}/api/post`,
-    {
-      method: "GET",
-      cache: "no-store",
-    }
-  );
+async function getBBSCardList() {
+  const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/post`, {
+    cache: "no-store",
+  });
+  // response.json() を使用して、レスポンスボディを JSON として解析
+  const bbsCardListData: BBSCardData[] = await response.json();
 
-  console.log(bbsCardListData);
+  return bbsCardListData;
+}
+
+export default async function Home() {
+  const bbsCardListData = await getBBSCardList();
 
   return (
     <div>
