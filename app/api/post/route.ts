@@ -3,7 +3,6 @@ import { NextResponse } from "next/server";
 
 export async function GET(req: Request) {
   const allBBSPosts = await prisma.post.findMany();
-  // console.log(allBBSPosts);
   return NextResponse.json(allBBSPosts);
 }
 

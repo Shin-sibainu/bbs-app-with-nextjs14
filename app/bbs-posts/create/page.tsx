@@ -16,8 +16,10 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useRouter } from "next/navigation";
+import { postBBS } from "@/app/actions/postBBSAction";
+import { useFormStatus } from "react-dom";
 
-const formSchema = z.object({
+export const formSchema = z.object({
   username: z.string().min(2, {
     message: "ユーザー名は2文字以上で入力してください。",
   }),
@@ -33,6 +35,8 @@ const formSchema = z.object({
 });
 
 export default function CreateBBSForm() {
+  const { pending } = useFormStatus();
+
   const router = useRouter();
   // 1. Define your form.
   const form = useForm<z.infer<typeof formSchema>>({
@@ -48,25 +52,29 @@ export default function CreateBBSForm() {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     const { username, title, content } = values;
     //api fetch
-    try {
-      await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/post`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ username, title, content }),
-      });
+    // try {
+    //   await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/post`, {
+    //     method: "POST",
+    //     headers: {
+    //       "Content-Type": "application/json",
+    //     },
+    //     body: JSON.stringify({ username, title, content }),
+    //   });
 
-      router.push("/");
-    } catch (err) {
-      console.error(err);
-    }
+    //   router.push("/");
+    // } catch (err) {
+    //   console.error(err);
+    // }
+
+    //server actions
+    postBBS({ username, title, content });
   }
 
   return (
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
+        // action={onSubmit}
         className="space-y-3 py-7 px-7 w-1/2"
       >
         <FormField
@@ -112,7 +120,9 @@ export default function CreateBBSForm() {
             </FormItem>
           )}
         />
-        <Button type="submit">投稿</Button>
+        <Button disabled={pending} type="submit">
+          {pending ? "送信中..." : "送信"}
+        </Button>
       </form>
     </Form>
   );

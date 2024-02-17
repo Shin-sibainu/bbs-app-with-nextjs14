@@ -11,6 +11,6 @@ export async function GET(
       id: parseInt(bbsId),
     },
   });
-  console.log(bbsDetailPost);
+  // console.log(bbsDetailPost);
   return NextResponse.json(bbsDetailPost);
 }
